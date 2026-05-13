@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aptitude-backend
+  labels:
+    app: aptitude-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: aptitude-backend
+  template:
+    metadata:
+      labels:
+        app: aptitude-backend
+    spec:
+      containers:
+      - name: aptitude-backend
+        image: your-docker-registry/aptitude-backend:latest
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: aptitude-config
+        - secretRef:
+            name: aptitude-secrets
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aptitude-backend-service
+spec:
+  selector:
+    app: aptitude-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer

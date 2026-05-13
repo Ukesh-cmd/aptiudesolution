@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aptitude-config
+data:
+  NODE_ENV: "production"
+  PORT: "3000"
+  JWT_EXPIRES_IN: "7d"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aptitude-secrets
+type: Opaque
+data:
+  # Base64 encoded values
+  DATABASE_URL: "cG9zdGdyZXNxbDovL3VrZXNoOlQ3N0ZyakpJV1VBaUhrVzR4aGVRR1E2OXM4ODl3ajFiQGRwZy1kODFnZzhwbzN0OGM3M2Vqb2szMC1hLm9yZWdvbi1wb3N0Z3Jlcy5yZW5kZXIuY29tL2FwdGl0dWRlX2treXJKP3NzbG1vZGU9cmVxdWlyZQ=="
+  JWT_SECRET: "eW91cl9zdXBlcl9zZWNyZXRfa2V5XzEyMw=="

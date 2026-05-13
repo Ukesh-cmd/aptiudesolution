@@ -1,0 +1,51 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Generate Prisma Client
+      run: npx prisma generate
+
+    - name: Run Lint
+      run: npm run lint
+      continue-on-error: true # Allow build to continue for now if there are many lint errors
+
+    - name: Run Tests
+      run: npm test
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres # Mock for CI
+        JWT_SECRET: test_secret
+
+    - name: Build Docker image
+
+      run: docker build -t aptitude-backend:${{ github.sha }} .
+
+    # To push to a registry, uncomment and configure the following:
+    # - name: Login to DockerHub
+    #   uses: docker/login-action@v3
+    #   with:
+    #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+    #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+    # - name: Push to DockerHub
+    #   run: |
+    #     docker tag aptitude-backend:${{ github.sha }} yourusername/aptitude-backend:latest
+    #     docker push yourusername/aptitude-backend:latest
