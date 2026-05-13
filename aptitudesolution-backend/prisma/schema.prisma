@@ -4,7 +4,101 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WebsiteContent {
+  id        Int      @id @default(autoincrement())
+  section   String
+  key       String
+  value     String
+  lang      String   @default("en")
+  updatedAt DateTime @updatedAt
+}
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  icon        String
+  features    String[]
+  rating      Float    @default(4.5)
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Division {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  icon        String
+  stats       String
+  color       String   @default("from-blue-500 to-blue-700")
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ConsultingService {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  icon        String
+  benefits    String[]
+  color       String   @default("from-blue-500 to-blue-700")
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Job {
+  id           Int        @id @default(autoincrement())
+  title        String
+  type         JobType
+  location     String
+  department   String
+  salary       String
+  remote       RemoteType
+  description  String
+  requirements String[]
+  deadline     DateTime?
+  isActive     Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Inquiry {
+  id        Int           @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  reply     String?
+  status    InquiryStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+}
+
+model Setting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  type      String   @default("text")
+  group     String   @default("general")
+  updatedAt DateTime @updatedAt
 }
 
 enum Role {
@@ -26,99 +120,4 @@ enum InquiryStatus {
   PENDING
   REPLIED
   CLOSED
-}
-
-model Admin {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String
-  role      Role     @default(ADMIN)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model WebsiteContent {
-  id        Int      @id @default(autoincrement())
-  section   String
-  key       String
-  value     String   @db.Text
-  lang      String   @default("en")
-  updatedAt DateTime @updatedAt
-}
-
-model Service {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String   @db.Text
-  icon        String
-  features    String[]
-  rating      Float    @default(4.5)
-  order       Int      @default(0)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Division {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String   @db.Text
-  icon        String
-  stats       String
-  color       String   @default("from-blue-500 to-blue-700")
-  order       Int      @default(0)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model ConsultingService {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String   @db.Text
-  icon        String
-  benefits    String[]
-  color       String   @default("from-blue-500 to-blue-700")
-  order       Int      @default(0)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Job {
-  id           Int        @id @default(autoincrement())
-  title        String
-  type         JobType
-  location     String
-  department   String
-  salary       String
-  remote       RemoteType
-  description  String     @db.Text
-  requirements String[]
-  deadline     DateTime?
-  isActive     Boolean    @default(true)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-}
-
-model Inquiry {
-  id        Int            @id @default(autoincrement())
-  name      String
-  email     String
-  phone     String?
-  subject   String
-  message   String         @db.Text
-  reply     String?        @db.Text
-  status    InquiryStatus  @default(PENDING)
-  createdAt DateTime       @default(now())
-}
-
-model Setting {
-  id        Int      @id @default(autoincrement())
-  key       String   @unique
-  value     String   @db.Text
-  type      String   @default("text")
-  group     String   @default("general")
-  updatedAt DateTime @updatedAt
 }
